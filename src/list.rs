@@ -15,6 +15,8 @@ pub struct ListState {
     stack: Vec<(usize, bool)>,
     /// Current ordered list numbers at each level
     numbers: Vec<usize>,
+    /// Whether we're in a "pending" state (saw ListEnd but might continue)
+    pending_reset: bool,
 }
 
 impl ListState {
@@ -65,6 +67,17 @@ impl ListState {
     pub fn reset(&mut self) {
         self.stack.clear();
         self.numbers.clear();
+        self.pending_reset = false;
+    }
+
+    /// Mark list as pending reset (saw ListEnd, but might continue with more items)
+    pub fn mark_pending_reset(&mut self) {
+        self.pending_reset = true;
+    }
+
+    /// Resume list if it was pending reset (new list item arrived)
+    fn resume_if_pending(&mut self) {
+        self.pending_reset = false;
     }
 }
 
@@ -78,13 +91,17 @@ pub fn render_list_item(
     theme: &Theme,
     list_state: &mut ListState,
 ) -> Vec<String> {
+    // Resume list if it was pending reset (continues after empty line)
+    list_state.resume_if_pending();
+
     // Adjust list state for current indent
     let ordered = matches!(bullet, ListBullet::Ordered(_));
     list_state.adjust_for_indent(indent, ordered);
 
     let level = list_state.level().saturating_sub(1);
 
-    // Calculate marker
+    // Calculate marker - use our own counter for ordered lists to work around
+    // the parser bug that normalizes all numbers to 1
     let marker = match bullet {
         ListBullet::Ordered(_) => {
             let num = list_state.next_number();

@@ -107,8 +107,25 @@ impl<W: Write> Renderer<W> {
         Ok(())
     }
 
+    /// Check if this event should reset a pending list.
+    /// List continues only for ListItem, ListEnd, and EmptyLine/Newline events.
+    fn should_reset_list(event: &ParseEvent) -> bool {
+        !matches!(
+            event,
+            ParseEvent::ListItem { .. }
+                | ParseEvent::ListEnd
+                | ParseEvent::EmptyLine
+                | ParseEvent::Newline
+        )
+    }
+
     /// Render a single parse event.
     pub fn render_event(&mut self, event: &ParseEvent) -> io::Result<()> {
+        // Reset pending list if this event breaks the list context
+        if Self::should_reset_list(event) {
+            self.list_state.reset();
+        }
+
         match event {
             // === Inline elements ===
             ParseEvent::Text(text) => {
@@ -225,7 +242,8 @@ impl<W: Write> Renderer<W> {
             }
 
             ParseEvent::ListEnd => {
-                self.list_state.reset();
+                // Mark as pending - will reset if non-list event arrives
+                self.list_state.mark_pending_reset();
             }
 
             ParseEvent::TableHeader(cols) | ParseEvent::TableRow(cols) => {
