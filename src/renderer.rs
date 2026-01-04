@@ -41,13 +41,13 @@ impl<W: Write> Renderer<W> {
             writer,
             width,
             theme,
-            highlighter: CodeHighlighter::new(),
+            highlighter: CodeHighlighter::default(),
             current_language: None,
             code_buffer: String::new(),
             table_rows: Vec::new(),
             in_blockquote: false,
             blockquote_depth: 0,
-            list_state: ListState::new(),
+            list_state: ListState::default(),
             column: 0,
         }
     }

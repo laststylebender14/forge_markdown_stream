@@ -15,18 +15,14 @@ pub struct CodeHighlighter {
 
 impl Default for CodeHighlighter {
     fn default() -> Self {
-        Self::new()
-    }
-}
-
-impl CodeHighlighter {
-    pub fn new() -> Self {
         Self {
             syntax_set: SyntaxSet::load_defaults_newlines(),
             theme_set: ThemeSet::load_defaults(),
         }
     }
+}
 
+impl CodeHighlighter {
     /// Highlight a single line of code.
     pub fn highlight_line(&self, line: &str, language: Option<&str>) -> String {
         let syntax = language
@@ -60,7 +56,11 @@ impl CodeHighlighter {
             let highlighted = self.highlight_line(code_line, language);
 
             // Add continuation indent for wrapped lines
-            let line_indent = if i == 0 { "" } else { &"  ".repeat(indent.min(4) / 2 + 1) };
+            let line_indent = if i == 0 {
+                ""
+            } else {
+                &"  ".repeat(indent.min(4) / 2 + 1)
+            };
 
             result.push(format!("{}{}{}{}", margin, line_indent, highlighted, RESET));
         }
