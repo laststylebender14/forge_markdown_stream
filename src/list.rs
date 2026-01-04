@@ -20,10 +20,6 @@ pub struct ListState {
 }
 
 impl ListState {
-    pub fn new() -> Self {
-        Self::default()
-    }
-
     pub fn level(&self) -> usize {
         self.stack.len()
     }
