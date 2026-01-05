@@ -32,10 +32,9 @@ pub fn render_table(rows: &[Vec<String>], margin: &str, theme: &Theme) -> Vec<St
         .collect::<Vec<_>>()
         .join("┬");
     result.push(format!(
-        "{}{}┌{}┐",
+        "{}{}",
         margin,
-        theme.table_border.apply(""),
-        theme.table_border.apply(&top)
+        theme.table_border.apply(&format!("┌{}┐", top))
     ));
 
     for (row_idx, row) in rows.iter().enumerate() {
@@ -61,10 +60,11 @@ pub fn render_table(rows: &[Vec<String>], margin: &str, theme: &Theme) -> Vec<St
             .collect::<Vec<_>>()
             .join(&theme.table_border.apply("│").to_string());
         result.push(format!(
-            "{}{}│{}│",
+            "{}{}{}{}",
             margin,
-            theme.table_border.apply(""),
-            cells
+            theme.table_border.apply("│"),
+            cells,
+            theme.table_border.apply("│")
         ));
 
         // Separator after header
@@ -75,9 +75,9 @@ pub fn render_table(rows: &[Vec<String>], margin: &str, theme: &Theme) -> Vec<St
                 .collect::<Vec<_>>()
                 .join("┼");
             result.push(format!(
-                "{}├{}┤",
+                "{}{}",
                 margin,
-                theme.table_border.apply(&sep)
+                theme.table_border.apply(&format!("├{}┤", sep))
             ));
         }
     }
@@ -89,9 +89,9 @@ pub fn render_table(rows: &[Vec<String>], margin: &str, theme: &Theme) -> Vec<St
         .collect::<Vec<_>>()
         .join("┴");
     result.push(format!(
-        "{}└{}┘",
+        "{}{}",
         margin,
-        theme.table_border.apply(&bottom)
+        theme.table_border.apply(&format!("└{}┘", bottom))
     ));
 
     result

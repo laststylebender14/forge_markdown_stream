@@ -1,6 +1,9 @@
 //! Text wrapping utilities with ANSI code awareness.
 
+use unicode_width::UnicodeWidthChar;
+
 /// Calculate visible length of a string (excluding ANSI escape codes).
+/// Uses Unicode width to properly handle wide characters like emojis.
 pub fn visible_length(s: &str) -> usize {
     let mut len = 0;
     let mut in_escape = false;
@@ -13,7 +16,7 @@ pub fn visible_length(s: &str) -> usize {
         } else if c == '\x1b' {
             in_escape = true;
         } else {
-            len += 1;
+            len += c.width().unwrap_or(0);
         }
     }
 
