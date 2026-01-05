@@ -100,7 +100,7 @@ impl<W: Write> Renderer<W> {
         }
         let rows = std::mem::take(&mut self.table_rows);
         let margin = self.left_margin();
-        let lines = render_table(&rows, &margin, &self.theme);
+        let lines = render_table(&rows, &margin, &self.theme, self.width);
         for line in lines {
             self.writeln(&line)?;
         }
