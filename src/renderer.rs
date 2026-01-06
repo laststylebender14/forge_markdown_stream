@@ -6,6 +6,7 @@ use streamdown_parser::{decode_html_entities, InlineElement, ParseEvent};
 
 use crate::code::CodeHighlighter;
 use crate::heading::render_heading;
+use crate::inline::render_inline_content;
 use crate::list::{render_list_item, ListState};
 use crate::table::render_table;
 use crate::text::text_wrap;
@@ -264,7 +265,9 @@ impl<W: Write> Renderer<W> {
             ParseEvent::BlockquoteLine(text) => {
                 let margin = self.left_margin();
                 let width = self.current_width();
-                let wrapped = text_wrap(text, width, &margin, &margin);
+                // Parse inline formatting (bold, italic, etc.) in blockquote content
+                let rendered_content = render_inline_content(text, &self.theme);
+                let wrapped = text_wrap(&rendered_content, width, &margin, &margin);
                 if wrapped.is_empty() {
                     self.writeln(&margin)?;
                 } else {
