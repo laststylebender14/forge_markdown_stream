@@ -17,8 +17,8 @@ name = "streamdown-demo"
 path = "src/main.rs"
 
 [dependencies]
-streamdown-parser = "0.1.3"
-streamdown-core = "0.1.3"
+streamdown-parser = { git = "https://github.com/laststylebender14/streamdown-rs.git", branch = "fix/allow-underscore-words" }
+streamdown-core = { git = "https://github.com/laststylebender14/streamdown-rs.git", branch = "fix/allow-underscore-words" }
 syntect = "5.3.0"
 terminal_size = "0.4"
 colored = "3.0.0"

@@ -644,9 +644,8 @@ dependencies = [
 
 [[package]]
 name = "streamdown-ansi"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "38601319ce67101a252a65685a894bb25ce298bf7ce35e35e5be48af65fc2bab"
+version = "0.1.2"
+source = "git+https://github.com/laststylebender14/streamdown-rs.git?branch=fix%2Fallow-underscore-words#8cf11dab548276395d54c4db29696adcdbdfb33b"
 dependencies = [
  "crossterm",
  "regex",
@@ -655,9 +654,8 @@ dependencies = [
 
 [[package]]
 name = "streamdown-core"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b5722240f4081c5ea38c92c739d91712095a49357ada4bc6c98b11667a970355"
+version = "0.1.2"
+source = "git+https://github.com/laststylebender14/streamdown-rs.git?branch=fix%2Fallow-underscore-words#8cf11dab548276395d54c4db29696adcdbdfb33b"
 dependencies = [
  "regex",
  "serde",
@@ -666,9 +664,8 @@ dependencies = [
 
 [[package]]
 name = "streamdown-parser"
-version = "0.1.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1e083cce85cf61f92a51053b2807bb8d690d2cdbf1af9dff5e00407cdde1f8b3"
+version = "0.1.2"
+source = "git+https://github.com/laststylebender14/streamdown-rs.git?branch=fix%2Fallow-underscore-words#8cf11dab548276395d54c4db29696adcdbdfb33b"
 dependencies = [
  "regex",
  "streamdown-ansi",
