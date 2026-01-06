@@ -150,7 +150,7 @@ impl Drop for CharWriter {
 }
 
 fn main() -> io::Result<()> {
-    let content = include_str!("data.md");
+    let content = include_str!("../src/data.md");
     let tokens: Vec<&str> = content.split_inclusive(" ").collect();
     let writer = CharWriter::new(1);
     let mut renderer = StreamdownRenderer::new(writer, 80);

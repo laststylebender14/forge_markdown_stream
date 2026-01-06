@@ -93,7 +93,7 @@ impl<W: Write> StreamdownRenderer<W> {
 
     /// Finish rendering, flushing any remaining buffered content.
     /// Returns the underlying writer.
-    pub fn finish(mut self) -> io::Result<W> {
+    pub fn finish(mut self) -> io::Result<()> {
         if !self.line_buffer.is_empty() {
             for repaired in repair_line(&self.line_buffer, self.parser.state()) {
                 for event in self.parser.parse_line(&repaired) {
@@ -104,7 +104,7 @@ impl<W: Write> StreamdownRenderer<W> {
         for event in self.parser.finalize() {
             self.renderer.render_event(&event)?;
         }
-        Ok(self.renderer.into_writer())
+        Ok(())
     }
 }
 
