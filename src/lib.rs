@@ -29,7 +29,6 @@ mod list;
 mod renderer;
 mod repair;
 mod table;
-mod text;
 mod theme;
 mod style;
 

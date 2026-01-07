@@ -2,7 +2,7 @@
 
 use crate::inline::render_inline_content;
 use crate::style::{InlineStyler, TableStyler};
-use crate::text::visible_length;
+use streamdown_ansi::utils::visible_length;
 use unicode_width::{UnicodeWidthChar, UnicodeWidthStr};
 
 /// Render a table with proper column widths, shrinking and wrapping if needed.

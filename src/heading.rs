@@ -2,7 +2,7 @@
 
 use crate::inline::render_inline_content;
 use crate::style::{HeadingStyler, InlineStyler};
-use crate::text::simple_wrap;
+use streamdown_render::simple_wrap;
 
 /// Render a heading with appropriate styling.
 pub fn render_heading<S: InlineStyler + HeadingStyler>(

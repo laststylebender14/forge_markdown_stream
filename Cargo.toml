@@ -13,8 +13,10 @@ name = "forge_markdown_stream"
 path = "src/lib.rs"
 
 [dependencies]
-streamdown-parser = { git = "https://github.com/fed-stew/streamdown-rs.git", branch = "main" }
-streamdown-core = { git = "https://github.com/fed-stew/streamdown-rs.git", branch = "main" }
+streamdown-parser = { path = "../streamdown-rs-fix/crates/streamdown-parser" }
+streamdown-core = { path = "../streamdown-rs-fix/crates/streamdown-core" }
+streamdown-ansi = { path = "../streamdown-rs-fix/crates/streamdown-ansi" }
+streamdown-render = { path = "../streamdown-rs-fix/crates/streamdown-render" }
 syntect = "5.3.0"
 colored = "3.0.0"
 unicode-width = "0.2"

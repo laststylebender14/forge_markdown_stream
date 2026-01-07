@@ -9,8 +9,8 @@ use crate::heading::render_heading;
 use crate::inline::render_inline_content;
 use crate::list::{render_list_item, ListState};
 use crate::table::render_table;
-use crate::text::text_wrap;
 use crate::theme::Theme;
+use streamdown_render::text::text_wrap;
 
 /// Main renderer for markdown events.
 pub struct Renderer<W: Write> {
@@ -267,7 +267,7 @@ impl<W: Write> Renderer<W> {
                 let width = self.current_width();
                 // Parse inline formatting (bold, italic, etc.) in blockquote content
                 let rendered_content = render_inline_content(text, &self.theme);
-                let wrapped = text_wrap(&rendered_content, width, &margin, &margin);
+                let wrapped = text_wrap(&rendered_content, width, 0, &margin, &margin, false, true);
                 if wrapped.is_empty() {
                     self.writeln(&margin)?;
                 } else {
