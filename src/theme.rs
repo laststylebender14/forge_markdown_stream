@@ -3,6 +3,9 @@
 //! Provides customizable styling for all markdown elements using the `colored` crate.
 
 use colored::{Color, ColoredString, Colorize};
+use streamdown_parser::decode_html_entities;
+
+use crate::style::InlineStyler;
 
 /// Style configuration for a single element.
 #[derive(Clone, Debug)]
@@ -149,6 +152,61 @@ impl Default for Theme {
     }
 }
 
+/// Theme-based styler that outputs ANSI codes.
+impl InlineStyler for Theme {
+    fn text(&self, text: &str) -> String {
+        decode_html_entities(text)
+    }
+
+    fn bold(&self, text: &str) -> String {
+        self.bold.apply(&decode_html_entities(text)).to_string()
+    }
+
+    fn italic(&self, text: &str) -> String {
+        self.italic.apply(&decode_html_entities(text)).to_string()
+    }
+
+    fn bold_italic(&self, text: &str) -> String {
+        let decoded = decode_html_entities(text);
+        let styled = self.bold.apply(&decoded);
+        self.italic.apply(&styled.to_string()).to_string()
+    }
+
+    fn strikethrough(&self, text: &str) -> String {
+        self.strikethrough
+            .apply(&decode_html_entities(text))
+            .to_string()
+    }
+
+    fn underline(&self, text: &str) -> String {
+        format!("\x1b[4m{}\x1b[24m", decode_html_entities(text))
+    }
+
+    fn code(&self, text: &str) -> String {
+        self.code.apply(text).to_string()
+    }
+
+    fn link(&self, text: &str, url: &str) -> String {
+        let mut result = String::new();
+        result.push_str("\x1b]8;;");
+        result.push_str(url);
+        result.push_str("\x1b\\");
+        result.push_str(&self.link.apply(&decode_html_entities(text)).to_string());
+        result.push_str("\x1b]8;;\x1b\\");
+        result.push(' ');
+        result.push_str(&self.link_url.apply(&format!("({})", url)).to_string());
+        result
+    }
+
+    fn image(&self, alt: &str, _url: &str) -> String {
+        format!("[🖼 {}]", alt)
+    }
+
+    fn footnote(&self, text: &str) -> String {
+        text.to_string()
+    }
+}
+
 impl Theme {
     /// Dark theme (default).
     pub fn dark() -> Self {
@@ -236,5 +294,53 @@ impl Theme {
             // HR
             hr: Style::new().fg(Color::Black),
         }
+    }
+}
+
+
+/// Test styler that outputs readable HTML-like tags.
+#[cfg(test)]
+pub struct TagStyler;
+
+#[cfg(test)]
+impl InlineStyler for TagStyler {
+    fn text(&self, text: &str) -> String {
+        decode_html_entities(text)
+    }
+
+    fn bold(&self, text: &str) -> String {
+        format!("<b>{}</b>", decode_html_entities(text))
+    }
+
+    fn italic(&self, text: &str) -> String {
+        format!("<i>{}</i>", decode_html_entities(text))
+    }
+
+    fn bold_italic(&self, text: &str) -> String {
+        format!("<b><i>{}</i></b>", decode_html_entities(text))
+    }
+
+    fn strikethrough(&self, text: &str) -> String {
+        format!("<s>{}</s>", decode_html_entities(text))
+    }
+
+    fn underline(&self, text: &str) -> String {
+        format!("<u>{}</u>", decode_html_entities(text))
+    }
+
+    fn code(&self, text: &str) -> String {
+        format!("<code>{}</code>", text)
+    }
+
+    fn link(&self, text: &str, url: &str) -> String {
+        format!("<a href=\"{}\">{}</a>", url, decode_html_entities(text))
+    }
+
+    fn image(&self, alt: &str, url: &str) -> String {
+        format!("<img alt=\"{}\" src=\"{}\"/>", alt, url)
+    }
+
+    fn footnote(&self, text: &str) -> String {
+        format!("<footnote>{}</footnote>", text)
     }
 }

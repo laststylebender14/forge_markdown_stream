@@ -31,6 +31,7 @@ mod repair;
 mod table;
 mod text;
 mod theme;
+mod style;
 
 use std::io::{self, Write};
 
