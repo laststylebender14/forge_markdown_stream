@@ -12,11 +12,6 @@ pub fn render_table<S: TableStyler + InlineStyler>(
     styler: &S,
     max_width: usize,
 ) -> Vec<String> {
-    let n = rows.iter().map(|r| r.len()).max().unwrap_or(0);
-    if rows.is_empty() || n == 0 {
-        return vec![];
-    }
-
     // First, render all cells with inline markdown
     let rendered_rows: Vec<Vec<String>> = rows
         .iter()
@@ -26,6 +21,10 @@ pub fn render_table<S: TableStyler + InlineStyler>(
                 .collect()
         })
         .collect();
+    let n = rendered_rows.iter().map(|r| r.len()).max().unwrap_or(0);
+    if rendered_rows.is_empty() || n == 0 {
+        return vec![];
+    }
 
     // Calculate column widths based on rendered content
     let mut w: Vec<usize> = vec![0; n];
@@ -125,13 +124,13 @@ fn wrap(text: &str, width: usize) -> Vec<String> {
         if c == '\x1b' {
             esc.push(c);
             i += 1;
-            
+
             // Check what type of sequence
             if i < chars.len() {
                 let next = chars[i];
                 esc.push(next);
                 i += 1;
-                
+
                 if next == '[' {
                     // CSI sequence - read until 'm' or other terminator
                     while i < chars.len() {
@@ -285,12 +284,12 @@ fn split_word_at_width(word: &str, width: usize) -> (String, String) {
         if c == '\x1b' {
             esc.push(c);
             i += 1;
-            
+
             if i < chars.len() {
                 let next = chars[i];
                 esc.push(next);
                 i += 1;
-                
+
                 if next == '[' {
                     // CSI sequence
                     while i < chars.len() {
@@ -319,7 +318,7 @@ fn split_word_at_width(word: &str, width: usize) -> (String, String) {
                     }
                 }
             }
-            
+
             // Add escape sequence to appropriate part
             if in_chunk {
                 chunk.push_str(&esc);
