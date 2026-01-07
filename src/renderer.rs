@@ -2,11 +2,11 @@
 
 use std::io::{self, Write};
 
-use streamdown_parser::{decode_html_entities, InlineElement, ParseEvent};
+use streamdown_parser::{decode_html_entities, ParseEvent};
 
 use crate::code::CodeHighlighter;
 use crate::heading::render_heading;
-use crate::inline::render_inline_content;
+use crate::inline::{render_inline_content, render_inline_elements};
 use crate::list::{render_list_item, ListState};
 use crate::table::render_table;
 use crate::theme::Theme;
@@ -308,47 +308,11 @@ impl<W: Write> Renderer<W> {
             ParseEvent::EmptyLine | ParseEvent::Newline => {
                 self.writeln("")?;
             }
-
             ParseEvent::InlineElements(elements) => {
-                for element in elements {
-                    self.render_inline_element(element)?;
-                }
+                self.write(&render_inline_elements(elements, &self.theme))?;
             }
         }
 
         self.writer.flush()
-    }
-
-    fn render_inline_element(&mut self, element: &InlineElement) -> io::Result<()> {
-        match element {
-            InlineElement::Text(s) => self.write(s)?,
-            InlineElement::Bold(s) => self.write(&self.theme.bold.apply(s).to_string())?,
-            InlineElement::Italic(s) => self.write(&self.theme.italic.apply(s).to_string())?,
-            InlineElement::BoldItalic(s) => {
-                let styled = self.theme.bold.apply(s);
-                self.write(&self.theme.italic.apply(&styled.to_string()).to_string())?;
-            }
-            InlineElement::Underline(s) => self.write(&format!("\x1b[4m{}\x1b[24m", s))?,
-            InlineElement::Strikeout(s) => {
-                self.write(&self.theme.strikethrough.apply(s).to_string())?
-            }
-            InlineElement::Code(s) => self.write(&self.theme.code.apply(s).to_string())?,
-            InlineElement::Link { text, url } => {
-                self.write("\x1b]8;;")?;
-                self.write(url)?;
-                self.write("\x1b\\")?;
-                self.write(&self.theme.link.apply(text).to_string())?;
-                self.write("\x1b]8;;\x1b\\")?;
-                self.write(" ")?;
-                self.write(&self.theme.link_url.apply(&format!("({})", url)).to_string())?;
-            }
-            InlineElement::Image { alt, .. } => {
-                self.write(&format!("[🖼 {}]", alt))?;
-            }
-            InlineElement::Footnote(s) => {
-                self.write(s)?;
-            }
-        }
-        Ok(())
     }
 }

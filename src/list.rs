@@ -173,22 +173,22 @@ mod tests {
 
     #[test]
     fn test_unordered_dash() {
-        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item one"), @"  <dash>•</dash> Item one[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item one"), @"  <dash>•</dash> Item one");
     }
 
     #[test]
     fn test_unordered_asterisk() {
-        insta::assert_snapshot!(render(0, ListBullet::Asterisk, "Item two"), @"  <asterisk>∗</asterisk> Item two[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Asterisk, "Item two"), @"  <asterisk>∗</asterisk> Item two");
     }
 
     #[test]
     fn test_unordered_plus() {
-        insta::assert_snapshot!(render(0, ListBullet::Plus, "Item three"), @"  <plus>⊕</plus> Item three[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Plus, "Item three"), @"  <plus>⊕</plus> Item three");
     }
 
     #[test]
     fn test_ordered_item() {
-        insta::assert_snapshot!(render(0, ListBullet::Ordered(1), "First item"), @"  <num>1.</num> First item[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Ordered(1), "First item"), @"  <num>1.</num> First item");
     }
 
     #[test]
@@ -198,14 +198,14 @@ mod tests {
         let second = render_with_state(0, ListBullet::Ordered(1), "Second", &mut state);
         let third = render_with_state(0, ListBullet::Ordered(1), "Third", &mut state);
 
-        insta::assert_snapshot!(first, @"  <num>1.</num> First[0m");
-        insta::assert_snapshot!(second, @"  <num>2.</num> Second[0m");
-        insta::assert_snapshot!(third, @"  <num>3.</num> Third[0m");
+        insta::assert_snapshot!(first, @"  <num>1.</num> First");
+        insta::assert_snapshot!(second, @"  <num>2.</num> Second");
+        insta::assert_snapshot!(third, @"  <num>3.</num> Third");
     }
 
     #[test]
     fn test_plus_expand() {
-        insta::assert_snapshot!(render(0, ListBullet::PlusExpand, "Expandable"), @"  <expand>⊞</expand> Expandable[0m");
+        insta::assert_snapshot!(render(0, ListBullet::PlusExpand, "Expandable"), @"  <expand>⊞</expand> Expandable");
     }
 
     #[test]
@@ -215,7 +215,7 @@ mod tests {
         let _ = render_with_state(0, ListBullet::Dash, "Parent", &mut state);
         // Nested item at indent 1
         let nested = render_with_state(1, ListBullet::Dash, "Child", &mut state);
-        insta::assert_snapshot!(nested, @"    <dash>◦</dash> Child[0m");
+        insta::assert_snapshot!(nested, @"    <dash>◦</dash> Child");
     }
 
     #[test]
@@ -224,7 +224,7 @@ mod tests {
         let _ = render_with_state(0, ListBullet::Dash, "Level 0", &mut state);
         let _ = render_with_state(1, ListBullet::Dash, "Level 1", &mut state);
         let level2 = render_with_state(2, ListBullet::Dash, "Level 2", &mut state);
-        insta::assert_snapshot!(level2, @"      <dash>▪</dash> Level 2[0m");
+        insta::assert_snapshot!(level2, @"      <dash>▪</dash> Level 2");
     }
 
     #[test]
@@ -245,22 +245,22 @@ mod tests {
 
     #[test]
     fn test_inline_bold() {
-        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with **bold** text"), @"  <dash>•</dash> Item with <b>bold</b> text[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with **bold** text"), @"  <dash>•</dash> Item with <b>bold</b> text");
     }
 
     #[test]
     fn test_inline_italic() {
-        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with *italic* text"), @"  <dash>•</dash> Item with <i>italic</i> text[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with *italic* text"), @"  <dash>•</dash> Item with <i>italic</i> text");
     }
 
     #[test]
     fn test_inline_code() {
-        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with `code` text"), @"  <dash>•</dash> Item with <code>code</code> text[0m");
+        insta::assert_snapshot!(render(0, ListBullet::Dash, "Item with `code` text"), @"  <dash>•</dash> Item with <code>code</code> text");
     }
 
     #[test]
     fn test_inline_link() {
-        insta::assert_snapshot!(render(0, ListBullet::Dash, "See [link](https://example.com)"), @r#"  <dash>•</dash> See <a href="https://example.com">link</a>[0m"#);
+        insta::assert_snapshot!(render(0, ListBullet::Dash, "See [link](https://example.com)"), @r#"  <dash>•</dash> See <a href="https://example.com">link</a>"#);
     }
 
     #[test]
@@ -272,8 +272,8 @@ mod tests {
     fn test_wrapping_long_content() {
         let result = render_with_width(0, ListBullet::Dash, "This is a very long list item that should wrap to multiple lines", 40);
         insta::assert_snapshot!(result, @r"
-        <dash>•</dash> This is a very long list item that[0m
-          should wrap to multiple lines[0m
+        <dash>•</dash> This is a very long list item that
+          should wrap to multiple lines
         ");
     }
 
@@ -284,7 +284,7 @@ mod tests {
         let _ = render_with_state(0, ListBullet::Ordered(1), "Second", &mut state);
         state.reset();
         let after_reset = render_with_state(0, ListBullet::Ordered(1), "New first", &mut state);
-        insta::assert_snapshot!(after_reset, @"  <num>1.</num> New first[0m");
+        insta::assert_snapshot!(after_reset, @"  <num>1.</num> New first");
     }
 
     #[test]
@@ -294,7 +294,7 @@ mod tests {
         let _ = render_with_state(1, ListBullet::Ordered(1), "Child 1", &mut state);
         let _ = render_with_state(1, ListBullet::Ordered(1), "Child 2", &mut state);
         let parent2 = render_with_state(0, ListBullet::Ordered(1), "Parent 2", &mut state);
-        insta::assert_snapshot!(parent2, @"  <num>2.</num> Parent 2[0m");
+        insta::assert_snapshot!(parent2, @"  <num>2.</num> Parent 2");
     }
 
     #[test]

@@ -5,11 +5,12 @@ use streamdown_parser::{InlineElement, InlineParser};
 
 /// Render inline elements to a string using a styler.
 pub fn render_inline_content<S: InlineStyler>(content: &str, styler: &S) -> String {
-    let mut parser = InlineParser::new();
-    let elements = parser.parse(content);
+    render_inline_elements(&InlineParser::new().parse(content), styler)
+}
 
+/// Render inline elements to a string using a styler.
+pub fn render_inline_elements<S: InlineStyler>(elements: &[InlineElement], styler: &S) -> String {
     let mut result = String::new();
-
     for element in elements {
         match element {
             InlineElement::Text(text) => {
@@ -50,7 +51,7 @@ pub fn render_inline_content<S: InlineStyler>(content: &str, styler: &S) -> Stri
 
 #[cfg(test)]
 mod tests {
-    use crate::{Theme, theme::TagStyler};
+    use crate::{theme::TagStyler, Theme};
 
     use super::*;
 
