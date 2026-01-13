@@ -151,7 +151,7 @@ pub struct Theme {
 
 impl Default for Theme {
     fn default() -> Self {
-        Self::dark()
+        Self::detect()
     }
 }
 
@@ -269,6 +269,16 @@ impl TableStyler for Theme {
 }
 
 impl Theme {
+    /// Detects the terminal theme (dark or light) and returns the appropriate theme.
+    pub fn detect() -> Self {
+        use crate::utils::{detect_theme_mode, ThemeMode};
+
+        match detect_theme_mode() {
+            ThemeMode::Light => Self::light(),
+            ThemeMode::Dark => Self::dark(),
+        }
+    }
+
     /// Dark theme (default).
     pub fn dark() -> Self {
         Self {

@@ -1,5 +1,6 @@
 //! Code block rendering with syntax highlighting and line wrapping.
 
+use crate::utils::{detect_theme_mode, ThemeMode};
 use streamdown_render::code::code_wrap;
 use syntect::easy::HighlightLines;
 use syntect::highlighting::ThemeSet;
@@ -12,6 +13,7 @@ const RESET: &str = "\x1b[0m";
 pub struct CodeHighlighter {
     syntax_set: SyntaxSet,
     theme_set: ThemeSet,
+    theme_mode: ThemeMode,
 }
 
 impl Default for CodeHighlighter {
@@ -19,6 +21,7 @@ impl Default for CodeHighlighter {
         Self {
             syntax_set: SyntaxSet::load_defaults_newlines(),
             theme_set: ThemeSet::load_defaults(),
+            theme_mode: detect_theme_mode(),
         }
     }
 }
@@ -30,7 +33,11 @@ impl CodeHighlighter {
             .and_then(|lang| self.syntax_set.find_syntax_by_token(lang))
             .unwrap_or_else(|| self.syntax_set.find_syntax_plain_text());
 
-        let theme = &self.theme_set.themes["base16-ocean.dark"];
+        let theme_name = match self.theme_mode {
+            ThemeMode::Dark => "base16-ocean.dark",
+            ThemeMode::Light => "InspiredGitHub",
+        };
+        let theme = &self.theme_set.themes[theme_name];
         let mut highlighter = HighlightLines::new(syntax, theme);
 
         match highlighter.highlight_line(line, &self.syntax_set) {
