@@ -12,15 +12,22 @@ pub fn render_heading<S: InlineStyler + HeadingStyler>(
     margin: &str,
     styler: &S,
 ) -> Vec<String> {
+    // For h1, uppercase the content before rendering inline elements
+    let content_to_render = if level == 1 {
+        content.to_uppercase()
+    } else {
+        content.to_string()
+    };
+    
     // First render inline elements (bold, italic, etc.) in the content
-    let rendered_content = render_inline_content(content, styler);
+    let rendered_content = render_inline_content(&content_to_render, styler);
     let lines = simple_wrap(&rendered_content, width);
     let mut result = Vec::new();
 
     for line in lines {
         let formatted = match level {
             1 => {
-                // H1: Bold, left-aligned
+                // H1: Bold, left-aligned, uppercase
                 format!("{}\n{}{}", margin, margin, styler.h1(&line))
             }
             2 => {
@@ -67,7 +74,7 @@ mod tests {
     fn test_h1_simple() {
         insta::assert_snapshot!(render(1, "Hello World"), @r"
           
-          <h1>Hello World</h1>
+          <h1>HELLO WORLD</h1>
         ");
     }
 
@@ -103,7 +110,7 @@ mod tests {
     fn test_h1_with_inline_bold() {
         insta::assert_snapshot!(render(1, "Hello **bold** world"), @r"
           
-          <h1>Hello <b>bold</b> world</h1>
+          <h1>HELLO <b>BOLD</b> WORLD</h1>
         ");
     }
 
@@ -139,7 +146,7 @@ mod tests {
     fn test_custom_margin() {
         insta::assert_snapshot!(render_with_margin(1, "Title", "    "), @r"
             
-            <h1>Title</h1>
+            <h1>TITLE</h1>
         ");
         insta::assert_snapshot!(render_with_margin(3, "Section", ">>> "), @">>> <h3>Section</h3>");
     }
@@ -148,7 +155,7 @@ mod tests {
     fn test_no_margin() {
         insta::assert_snapshot!(render_with_margin(1, "Title", ""), @r"
 
-        <h1>Title</h1>
+        <h1>TITLE</h1>
         ");
         insta::assert_snapshot!(render_with_margin(3, "Section", ""), @"<h3>Section</h3>");
     }
@@ -157,11 +164,11 @@ mod tests {
     fn test_wrapping_narrow_width() {
         insta::assert_snapshot!(render_with_width(1, "This is a very long heading that should wrap", 20), @r"
           
-          <h1>This is a very long</h1>
+          <h1>THIS IS A VERY LONG</h1>
           
-          <h1>heading that should</h1>
+          <h1>HEADING THAT SHOULD</h1>
           
-          <h1>wrap</h1>
+          <h1>WRAP</h1>
         ");
     }
 
