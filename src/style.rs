@@ -10,6 +10,7 @@ pub trait InlineStyler {
     fn link(&self, text: &str, url: &str) -> String;
     fn image(&self, alt: &str, url: &str) -> String;
     fn footnote(&self, text: &str) -> String;
+    fn dimmed(&self, text: &str) -> String;
 }
 
 
