@@ -208,6 +208,10 @@ impl InlineStyler for Theme {
     fn footnote(&self, text: &str) -> String {
         text.to_string()
     }
+
+    fn dimmed(&self, text: &str) -> String {
+        Style::new().dimmed().apply(text).to_string()
+    }
 }
 
 impl HeadingStyler for Theme {
@@ -419,6 +423,10 @@ impl InlineStyler for TagStyler {
 
     fn footnote(&self, text: &str) -> String {
         format!("<footnote>{}</footnote>", text)
+    }
+
+    fn dimmed(&self, text: &str) -> String {
+        format!("<dim>{}</dim>", text)
     }
 }
 
